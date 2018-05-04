@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linear"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="top|center"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_navigation" />
+
+    <RadioGroup
+        android:id="@+id/radioData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/radioDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:checked="true"
+            android:text="Date" />
+
+        <RadioButton
+            android:id="@+id/radioTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Time" />
+
+
+        <RadioButton
+            android:id="@+id/radioWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Week" />
+
+        <RadioButton
+            android:id="@+id/radioMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Month" />
+
+        <RadioButton
+            android:id="@+id/radioYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Year" />
+    </RadioGroup>
+
+
+    <Button
+        android:id="@+id/btn_search_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search Continue" />
+
+
+    <TextView
+        android:id="@+id/text_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button1"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:gravity="bottom"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+
+    <Button
+
+        android:id="@+id/btn_search_final"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:gravity="bottom"
+        android:text="Search on that"
+        android:visibility="gone" />
+
+
+</LinearLayout>
