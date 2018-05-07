@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         android:orientation="horizontal">
 
         <TextView
@@ -18,13 +18,13 @@
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
             android:gravity="center"
-            android:text="Select Date"
+            android:text="Start Date"
             android:textSize="20dp" />
 
         <DatePicker
             android:id="@+id/datePicker_time"
             android:layout_width="wrap_content"
-            android:layout_height="150dp"
+            android:layout_height="120dp"
             android:calendarViewShown="false"
             android:datePickerMode="spinner" />
 
@@ -48,12 +48,35 @@
         <TimePicker
             android:id="@+id/timePicker_start"
             android:layout_width="wrap_content"
-            android:layout_height="150dp"
+            android:layout_height="120dp"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="20dp"
             android:timePickerMode="spinner" />
     </LinearLayout>
 
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="End Date"
+            android:textSize="20dp" />
+
+        <DatePicker
+            android:id="@+id/datePicker_time_end"
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -72,11 +95,13 @@
         <TimePicker
             android:id="@+id/timePicker_end"
             android:layout_width="wrap_content"
-            android:layout_height="150dp"
+            android:layout_height="120dp"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="20dp"
             android:timePickerMode="spinner" />
     </LinearLayout>
+
+
 
 
     <Button
@@ -84,7 +109,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="Get Time" />
 

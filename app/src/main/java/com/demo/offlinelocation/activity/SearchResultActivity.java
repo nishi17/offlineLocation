@@ -38,10 +38,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -110,39 +113,67 @@ public class SearchResultActivity extends AppCompatActivity {
                         Log.e("get date ", get_search_date);
 
 
-                        Get_Date_data(get_search_date);
+                        try {
+                            Get_Date_data(get_search_date);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
 
                     } else if (search_type.equalsIgnoreCase("Time")) {
 
 
-                        String get_search_time_date = getIntent().getExtras().getString("search_time_date");
+                        String get_search_time_date_start = getIntent().getExtras().getString("search_time_date_start");
+                        String get_search_time_date_end = getIntent().getExtras().getString("search_time_date_end");
                         String get_search_time_start = getIntent().getExtras().getString("search_time_start");
                         String get_search_time_end = getIntent().getExtras().getString("search_time_end");
 
-                        Log.e("get Time ", get_search_time_date + "   " + get_search_time_start + "   " + get_search_time_end);
 
+                        Log.e("get Time ", get_search_time_date_start + "   " + get_search_time_date_end + "   " + get_search_time_start + "   " + get_search_time_end);
+
+                        try {
+                            Get_Time_data(get_search_time_date_start, get_search_time_date_end, get_search_time_start, get_search_time_end);
+                        } catch (ParseException e) {
+                            Log.e("exceprionn ", e.getMessage());
+                        }
 
                     } else if (search_type.equalsIgnoreCase("Week")) {
 
                         String get_search_week = getIntent().getExtras().getString("search_week");
 
+
+                        try {
+                            Get_Week_data(get_search_week);
+                        } catch (ParseException e) {
+                            Log.e("exceprionn ", e.getMessage());
+                        }
+
                         Log.e("get Week ", get_search_week);
 
 
-                    } else if (search_type.equalsIgnoreCase("Month")) {
+                    } else if (search_type.equalsIgnoreCase("Month & Year")) {
 
                         String get_search_month = getIntent().getExtras().getString("search_month");
+                        String get_search_year = getIntent().getExtras().getString("search_year");
 
-                        Log.e("get Month ", get_search_month);
 
-                    } else if (search_type.equalsIgnoreCase("Year")) {
+                        try {
+
+                            Get_MONTH_YEAR_data(get_search_month, get_search_year);
+
+                            Log.e("get Month year ", get_search_month + "  " + get_search_year);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }/* else if (search_type.equalsIgnoreCase("Year")) {
 
                         String get_search_year = getIntent().getExtras().getString("search_year");
 
                         Log.e("get Year ", get_search_year);
 
 
-                    }
+                    }*/
 
 
                     Log.e("quey  string  ", querySTRING);
@@ -164,22 +195,197 @@ public class SearchResultActivity extends AppCompatActivity {
 
     }
 
-    private void Get_Date_data(String get_search_date) {
-        DateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+    private void Get_MONTH_YEAR_data(String get_search_month, String lastWeekDatee) throws ParseException {
+
+        /*   IN THIS METHOD COMMENT SECTION IS FOR THE datetime FORMAT GET DATE.. ITS USE FOR FURTHER
+         *   USE FOR FIND DIFFRENCE BETWEEN YEAR AND MONTH OF SELECTED AND CURRENT   */
+
+        Cursor cursor = null;
+        String month_se = null;
+
+        int year_select = Integer.parseInt(lastWeekDatee);
+
+     /*   int year_current = Calendar.getInstance().get(Calendar.YEAR);
+        int pass_year = year_select - year_current;
+        Calendar c = Calendar.getInstance();
+        // Log.e("lasttaas fdsc     ", year_select + "  " + year_current + "   " + pass_year);
+        SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+        c.add(Calendar.YEAR, pass_year);*/
+
+
+        R_data_common_Before_curser();
+
+
+        if (get_search_month == null) {
+
+            cursor = database.rawQuery("SELECT * FROM " + DatabaseHandler.TABLE_LOCATION
+                    + " WHERE strftime('%Y', TIME) =  '" + year_select + "'", null);
+        } else {
+
+            Date date = new SimpleDateFormat("MMMM").parse(get_search_month);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+
+            int month_select = cal.get(Calendar.MONTH) + 1;// if you put month_select date in to calender.add then remove + 1 so you get exact month
+
+            if (month_select < 10) {
+                month_se = "0" + month_select;
+            }
+
+           /* int month_current = Calendar.getInstance().get(Calendar.MONTH);
+            int pass_current = month_select - month_current;
+            c.add(Calendar.MONTH, pass_current);*/
+
+            Log.e("montthh ****  fdsc     ", String.valueOf(month_select));
+
+            cursor = database.rawQuery("SELECT * FROM " + DatabaseHandler.TABLE_LOCATION
+                    + " WHERE strftime('%Y', TIME) = '" + year_select + "'  AND strftime('%m', TIME) = '" + month_se + "' ", null);
+
+
+        }
+
+      /*  String lastWeekD = newFormat.format(c.getTime());
+        Log.e("lasttaas fdsc     ", lastWeekD + "cursor size  " + cursor.getCount());*/
+
+
+        R_data_common_AFTER_curser(cursor);
+
+
+    }
+
+    private void Get_Week_data(String get_search_week) throws ParseException {
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+
+        Date date1 = new Date();
+        String CurrentDate = newFormat.format(date1);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(date1);
+
+        if (get_search_week.equalsIgnoreCase("Last Week")) {
+
+
+            c.add(Calendar.DATE, -7);
+
+        } else if (get_search_week.equalsIgnoreCase("Last 2 Week")) {
+
+
+            c.add(Calendar.DATE, -14);
+
+
+        } else if (get_search_week.equalsIgnoreCase("Last 3 Week")) {
+
+
+            c.add(Calendar.DATE, -21);
+
+        } else if (get_search_week.equalsIgnoreCase("Last 4 Week")) {
+
+
+            c.add(Calendar.DATE, -28);
+
+
+        } else if (get_search_week.equalsIgnoreCase("Last Month")) {
+
+
+            c.add(Calendar.DATE, -30);
+
+        }
+        String lastWeekDatee = formatter.format(c.getTime());
+
+        R_data_common_Before_curser();
+
+
+        try {
+            Date date = (Date) formatter.parse(lastWeekDatee);
+            String lastweekDate = newFormat.format(date);
+
+
+            Log.e(" lastdate and Current ", lastweekDate + "    " + CurrentDate);
+
+            Cursor cursor = database.rawQuery("select LATITUDE, LONGITUTE, ADDRESS, TIME from "
+                    + DatabaseHandler.TABLE_LOCATION + " where TIME BETWEEN '"
+                    + lastweekDate + "' AND '"
+                    + CurrentDate + "' ORDER BY TIME ASC", null);
+
+            R_data_common_AFTER_curser(cursor);
+        } catch (Exception e) {
+
+            Log.e("excpetion  ", e.getMessage());
+
+        }
+
+
+    }
+
+    private void Get_Time_data(String get_search_time_date_start, String get_search_time_date_end, String get_search_time_start, String get_search_time_end) throws ParseException {
+
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        Calendar cStart = Calendar.getInstance();
+
+        cStart.setTime(formatter.parse(get_search_time_date_start));
+
+        Time t = Time.valueOf(get_search_time_start);
+        cStart.add(Calendar.HOUR, t.getHours());
+        cStart.add(Calendar.MINUTE, t.getMinutes());
+        cStart.add(Calendar.SECOND, t.getSeconds());
+
+
+        Calendar cEndStart = Calendar.getInstance();
+        cEndStart.setTime(formatter.parse(get_search_time_date_end));
+
+        Time t1 = Time.valueOf(get_search_time_end);
+        cEndStart.add(Calendar.HOUR, t1.getHours());
+        cEndStart.add(Calendar.MINUTE, t1.getMinutes());
+        cEndStart.add(Calendar.SECOND, t1.getSeconds());
+
+
+        SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+
+
+        String StartFrom = newFormat.format(cStart.getTime());
+        String ENDFrom = newFormat.format(cEndStart.getTime());
+
+
+        Log.e("start  ", StartFrom + "  end  " + ENDFrom);
+
+        R_data_common_Before_curser();
+        try {
+            Cursor cursor = database.rawQuery("select LATITUDE, LONGITUTE, ADDRESS, TIME from " + DatabaseHandler.TABLE_LOCATION + " where TIME BETWEEN '" + StartFrom + "' AND '" + ENDFrom + "' ORDER BY TIME ASC", null);
+            R_data_common_AFTER_curser(cursor);
+        } catch (Exception e) {
+
+        }
+
+    }
+
+    private void Get_Date_data(String get_search_date) throws ParseException {
+
+
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Log.e("first  ", get_search_date);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(formatter.parse(get_search_date));
+        c.add(Calendar.DATE, 1);
+        String nextday = formatter.format(c.getTime());
+        Log.e("plus one datye  ", nextday);
 
         R_data_common_Before_curser();
 
         try {
             Date date = (Date) formatter.parse(get_search_date);
+            Date date2 = (Date) formatter.parse(nextday);
 
-            Log.e("first  ", get_search_date);
 
             Log.e("second  ", String.valueOf(date));
-            SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-DD HH:MM:SS");
+            SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
             String finalString = newFormat.format(date);
-            Log.e("final  ", finalString);
+            String nextdayfinalstring = newFormat.format(date2);
+            Log.e("final  ", finalString + "     " + nextdayfinalstring);
 
-            Cursor cursor = database.rawQuery("select LATITUDE, LONGITUTE, ADDRESS, TIME from " + DatabaseHandler.TABLE_LOCATION + " where Date BETWEEN '" + finalString + "' AND '" + finalString + "' ORDER BY Date ASC", null);
+            Cursor cursor = database.rawQuery("select LATITUDE, LONGITUTE, ADDRESS, TIME from " + DatabaseHandler.TABLE_LOCATION + " where TIME BETWEEN '" + finalString + "' AND '" + nextdayfinalstring + "' ORDER BY TIME ASC", null);
 
 
             R_data_common_AFTER_curser(cursor);
@@ -190,7 +396,6 @@ public class SearchResultActivity extends AppCompatActivity {
 
 
     }
-
 
     public static boolean isConnectingToInternet(Context mContext) {
         ConnectivityManager connectivity = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);

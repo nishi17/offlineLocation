@@ -46,12 +46,11 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private LinearLayout linear;
 
     public String search_date,
-            search_time_date, search_time_start, search_time_end,
+            search_time_date_start, search_time_date_end, search_time_start, search_time_end,
             search_week,
-            search_month,
-            search_year;
+            search_month, search_year;
 
-    private String item_week_Selected;
+    private String item_Selected, item_year_Selected;
 
     public SharedPreferences preferences;
 
@@ -62,7 +61,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         context = SearchActivity.this;
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
-     //   preferences = getPreferences(Context.MODE_PRIVATE);
+        //   preferences = getPreferences(Context.MODE_PRIVATE);
 
         linear = (LinearLayout) findViewById(R.id.linear);
 
@@ -89,7 +88,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         r_date = (RadioButton) findViewById(R.id.radioDate);
         r_week = (RadioButton) findViewById(R.id.radioWeek);
         r_month = (RadioButton) findViewById(R.id.radioMonth);
-        r_year = (RadioButton) findViewById(R.id.radioYear);
+        //r_year = (RadioButton) findViewById(R.id.radioYear);
         btn_search_add = (Button) findViewById(R.id.btn_search_add);
 
         btn_search_add.setOnClickListener(this);
@@ -125,11 +124,12 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
                 } else if (search_type.equalsIgnoreCase("Time")) {
 
-                    intent.putExtra("search_time_date", search_time_date);
+                    intent.putExtra("search_time_date_start", search_time_date_start);
+                    intent.putExtra("search_time_date_end", search_time_date_end);
                     intent.putExtra("search_time_start", search_time_start);
                     intent.putExtra("search_time_end", search_time_end);
 
-                    Log.e("putt Time ", search_time_date + "   " + search_time_start + "   " + search_time_end);
+                    Log.e("putt Time ", search_time_date_start + "    " + search_time_date_end + "   " + search_time_start + "   " + search_time_end);
 
 
                 } else if (search_type.equalsIgnoreCase("Week")) {
@@ -139,19 +139,20 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                     Log.e("putt Week ", search_week);
 
 
-                } else if (search_type.equalsIgnoreCase("Month")) {
+                } else if (search_type.equalsIgnoreCase("Month & Year")) {
 
 
-                    intent.putExtra("search_month", search_month);
-                    Log.e("putt Month ", search_month);
-
-                } else if (search_type.equalsIgnoreCase("Year")) {
-
+                    intent.putExtra("search_month", (String) search_month);
                     intent.putExtra("search_year", search_year);
-                    Log.e("putt Year ", search_year);
+                    Log.e("putt Month ", search_month + "   " + search_year);
+
+                } /*else if (search_type.equalsIgnoreCase("Year")) {
+
+                 //   intent.putExtra("search_year", search_year);
+                  //  Log.e("putt Year ", search_year);
 
 
-                }
+                }*/
 
                 intent.putExtra("selectedSTRING", "its_has_value");
                 startActivity(intent);
@@ -166,12 +167,12 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         int selectedId = radioData.getCheckedRadioButtonId();
 
-        Log.e("text selectedId     ", selectedId + "    a");
+        // Log.e("text selectedId     ", selectedId + "    a");
         // find the radiobutton by returned id
         final RadioButton radioDataButton = (RadioButton) findViewById(selectedId);
 
         String selcted = radioDataButton.getText().toString();
-        Log.e("text selected text    ", selcted + "    a");
+        // Log.e("text selected text    ", selcted + "    a");
         //Toast.makeText(context, radioDataButton.getText() + "  ada", Toast.LENGTH_SHORT).show();
 
         if (selcted.equalsIgnoreCase("Date")) {
@@ -195,27 +196,27 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             btn_search_final.setVisibility(View.INVISIBLE);
             PopupFor_Week(context);
 
-        } else if (selcted.equalsIgnoreCase("Month")) {
+        } else if (selcted.equalsIgnoreCase("Month & Year")) {
             radioData.setVisibility(View.INVISIBLE);
             btn_search_add.setVisibility(View.INVISIBLE);
             text_selected.setVisibility(View.INVISIBLE);
             btn_search_final.setVisibility(View.INVISIBLE);
-            PopupFor_Month(context);
+            PopupFor_Month_YEAR(context);
 
-        } else if (selcted.equalsIgnoreCase("Year")) {
+        } /*else if (selcted.equalsIgnoreCase("Year")) {
             radioData.setVisibility(View.INVISIBLE);
             btn_search_add.setVisibility(View.INVISIBLE);
             text_selected.setVisibility(View.INVISIBLE);
             btn_search_final.setVisibility(View.INVISIBLE);
             PopupFor_Year(context);
 
-        }
+        }*/
 
 
     }
 
-    private void PopupFor_Year(Context context) {
 
+    private void PopupFor_Month_YEAR(Context context) {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
         View dialogView = inflater.inflate(R.layout.fragment_week, null);
@@ -235,86 +236,37 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         mPopupWindow.setFocusable(false);
         mPopupWindow.showAtLocation(linear, Gravity.NO_GRAVITY, 0, 1000);
 
-        TextView textView = (TextView) dialogView.findViewById(R.id.textView);
-        textView.setText("Year :  ");
+        TextView textView_year = (TextView) dialogView.findViewById(R.id.textView_year);
+        textView_year.setText("Year :  ");
 
         // Spinner element
-        Spinner spinner = (Spinner) dialogView.findViewById(R.id.spinner);
-
-        // Spinner click listener
-        spinner.setOnItemSelectedListener(this);
-
-        // Spinner Drop down elements
-        List<String> categories = new ArrayList<String>();
-        categories.add("1 year");
-        categories.add("2 year");
-        categories.add("3 year");
-        categories.add("4 year");
-        categories.add("5 year");
-        categories.add("10 year");
+        Spinner spinner_year = (Spinner) dialogView.findViewById(R.id.spinner_year);
+        spinner_year.setOnItemSelectedListener(this);
 
 
-        Button btnGet = (Button) dialogView.findViewById(R.id.button_time);
-        btnGet.setText("Get Year");
+        List<String> categories_year = new ArrayList<String>();
+        categories_year.add("2017");
+        categories_year.add("2018");
+        categories_year.add("2019");
+        categories_year.add("2020");
+        categories_year.add("2021");
+        categories_year.add("2022");
+
 
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> dataAdapter_year = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories_year);
 
         // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(/*android.R.layout.simple_spinner_dropdown_item*/R.layout.dropdown_spinner);
+        dataAdapter_year.setDropDownViewResource(/*android.R.layout.simple_spinner_dropdown_item*/R.layout.dropdown_spinner);
 
         // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
+        spinner_year.setAdapter(dataAdapter_year);
 
-
-        btnGet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                mPopupWindow.dismiss();
-
-                preferences.edit().putString(Common.Type_Search, "Year").commit();
-
-
-                radioData.setVisibility(View.VISIBLE);
-                btn_search_add.setVisibility(View.VISIBLE);
-                text_selected.setVisibility(View.VISIBLE);
-                btn_search_final.setVisibility(View.VISIBLE);
-
-
-                search_year = item_week_Selected;
-
-                text_selected.setText("Selected Year :   " + search_year);
-
-            }
-        });
-
-
-    }
-
-    private void PopupFor_Month(Context context) {
-
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-        View dialogView = inflater.inflate(R.layout.fragment_week, null);
-
-
-        mPopupWindow = new PopupWindow(
-                dialogView,
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.MATCH_PARENT
-        );
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            mPopupWindow.setElevation(5.0f);
-        }
-
-
-        mPopupWindow.setFocusable(false);
-        mPopupWindow.showAtLocation(linear, Gravity.NO_GRAVITY, 0, 1000);
 
         TextView textView = (TextView) dialogView.findViewById(R.id.textView);
         textView.setText("Month :  ");
 
+
         // Spinner element
         Spinner spinner = (Spinner) dialogView.findViewById(R.id.spinner);
 
@@ -323,6 +275,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         // Spinner Drop down elements
         List<String> categories = new ArrayList<String>();
+        categories.add("Select a Month");
         categories.add("January");
         categories.add("February");
         categories.add("March");
@@ -338,7 +291,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
 
         Button btnGet = (Button) dialogView.findViewById(R.id.button_time);
-        btnGet.setText("Get Month");
+        btnGet.setText("Get Month & Year");
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
@@ -356,7 +309,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
                 mPopupWindow.dismiss();
 
-                preferences.edit().putString(Common.Type_Search, "Month").commit();
+                preferences.edit().putString(Common.Type_Search, "Month & Year").commit();
 
 
                 radioData.setVisibility(View.VISIBLE);
@@ -364,10 +317,20 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 text_selected.setVisibility(View.VISIBLE);
                 btn_search_final.setVisibility(View.VISIBLE);
 
+                search_year = item_year_Selected;
+                search_month = item_Selected;
 
-                search_month = item_week_Selected;
+                String search_month_year;
 
-                text_selected.setText("Selected Month :   " + search_month);
+                if (search_month.equalsIgnoreCase("Select a Month")) {
+                    search_month = null;
+                    search_month_year = search_year;
+                } else {
+                    search_month_year = search_month + " & " + search_year;
+                }
+
+
+                text_selected.setText("Selected Month & Year :   " + search_month_year);
 
             }
         });
@@ -395,6 +358,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         mPopupWindow.setFocusable(false);
         mPopupWindow.showAtLocation(linear, Gravity.NO_GRAVITY, 0, 1000);
+
+        LinearLayout linear_year = (LinearLayout)dialogView.findViewById(R.id.linear_year);
+        linear_year.setVisibility(View.GONE);
 
         // Spinner element
         Spinner spinner = (Spinner) dialogView.findViewById(R.id.spinner);
@@ -439,7 +405,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 btn_search_final.setVisibility(View.VISIBLE);
 
 
-                search_week = item_week_Selected;
+                search_week = item_Selected;
 
                 text_selected.setText("Selected Week :   " + search_week);
 
@@ -471,7 +437,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         mPopupWindow.showAtLocation(linear, Gravity.NO_GRAVITY, 0, 1000);
 
         final TimePicker pickerStart, pickerEnd;
-        final DatePicker datePicker_time;
+        final DatePicker datePicker_time_start, datePicker_time_end;
         Button btnGet;
         final TextView tvw;
         tvw = (TextView) dialogView.findViewById(R.id.textView1);
@@ -481,7 +447,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         pickerEnd = (TimePicker) dialogView.findViewById(R.id.timePicker_end);
         pickerEnd.setIs24HourView(true);
 
-        datePicker_time = (DatePicker) dialogView.findViewById(R.id.datePicker_time);
+        datePicker_time_start = (DatePicker) dialogView.findViewById(R.id.datePicker_time);
+        datePicker_time_end = (DatePicker) dialogView.findViewById(R.id.datePicker_time_end);
 
         btnGet = (Button) dialogView.findViewById(R.id.button_time);
 
@@ -495,7 +462,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 preferences.edit().putString(Common.Type_Search, "Time").commit();
 
 
-                Log.e("fteee   " , preferences.getString(Common.Type_Search,""));
+                Log.e("fteee   ", preferences.getString(Common.Type_Search, ""));
 
                 radioData.setVisibility(View.VISIBLE);
                 btn_search_add.setVisibility(View.VISIBLE);
@@ -507,16 +474,19 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 if (Build.VERSION.SDK_INT >= 23) {
                     hourStart = pickerStart.getHour();
                     minuteStart = pickerStart.getMinute();
+
                 } else {
                     hourStart = pickerStart.getCurrentHour();
                     minuteStart = pickerStart.getCurrentMinute();
                 }
-                if (hourStart > 12) {
+
+              /*  if (hourStart > 12) {
                     start_am_pm = "PM";
                     hourStart = hourStart - 12;
                 } else {
                     start_am_pm = "AM";
-                }
+                }*/
+
 
                 if (Build.VERSION.SDK_INT >= 23) {
                     hourEnd = pickerEnd.getHour();
@@ -525,20 +495,33 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                     hourEnd = pickerEnd.getCurrentHour();
                     minuteEnd = pickerEnd.getCurrentMinute();
                 }
-                if (hourEnd > 12) {
+
+
+              /*  if (hourEnd > 12) {
                     end_am_pm = "PM";
                     hourEnd = hourEnd - 12;
                 } else {
                     end_am_pm = "AM";
-                }
+                }*/
 
 
-                search_time_date = datePicker_time.getDayOfMonth() + "/" + (datePicker_time.getMonth() + 1) + "/" + datePicker_time.getYear();
+                search_time_date_start = datePicker_time_start.getDayOfMonth() + "/" + (datePicker_time_start.getMonth() + 1) + "/" + datePicker_time_start.getYear();
 
+                search_time_date_end = datePicker_time_end.getDayOfMonth() + "/" + (datePicker_time_end.getMonth() + 1) + "/" + datePicker_time_end.getYear();
+
+/*
                 search_time_start = hourStart + ":" + minuteStart + " " + start_am_pm;
-                search_time_end = hourEnd + ":" + minuteEnd + " " + end_am_pm;
+                search_time_end = hourEnd + ":" + minuteEnd + " " + end_am_pm;*/
 
-                text_selected.setText("Selected Date: " + search_time_date + "   \n" +
+
+                search_time_start = hourStart + ":" + minuteStart + ":00";
+                search_time_end = hourEnd + ":" + minuteEnd + ":00";
+
+//                SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+//                String formatted = format.format(search_time_start); // date is a long in milliseconds
+
+
+                text_selected.setText("Selected Date: " + search_time_date_start + "  to  " + search_time_date_end + "  \n" +
                         "Selected Time: " + search_time_start + " to " + search_time_end);
 
             }
@@ -604,14 +587,120 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        mPopupWindow.dismiss();
+    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        item_week_Selected = parent.getItemAtPosition(position).toString();
+
+        Spinner spinner = (Spinner) parent;
+        if (spinner.getId() == R.id.spinner) {
+
+            item_Selected = parent.getItemAtPosition(position).toString();
+            //do this
+        }
+        if (spinner.getId() == R.id.spinner_year) {
+
+            item_year_Selected = parent.getItemAtPosition(position).toString();
+            //do this
+        }
+
+
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
+
+
+
+    /*
+    private void PopupFor_Year(Context context) {
+
+
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+        View dialogView = inflater.inflate(R.layout.fragment_week, null);
+
+
+        mPopupWindow = new PopupWindow(
+                dialogView,
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT
+        );
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            mPopupWindow.setElevation(5.0f);
+        }
+
+
+        mPopupWindow.setFocusable(false);
+        mPopupWindow.showAtLocation(linear, Gravity.NO_GRAVITY, 0, 1000);
+
+        TextView textView = (TextView) dialogView.findViewById(R.id.textView);
+        textView.setText("Year :  ");
+
+        // Spinner element
+        Spinner spinner = (Spinner) dialogView.findViewById(R.id.spinner);
+
+        // Spinner click listener
+        spinner.setOnItemSelectedListener(this);
+
+        // Spinner Drop down elements
+        List<String> categories = new ArrayList<String>();
+        categories.add("1 year");
+        categories.add("2 year");
+        categories.add("3 year");
+        categories.add("4 year");
+        categories.add("5 year");
+        categories.add("10 year");
+
+
+        Button btnGet = (Button) dialogView.findViewById(R.id.button_time);
+        btnGet.setText("Get Year");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(*/
+/*android.R.layout.simple_spinner_dropdown_item*//*
+R.layout.dropdown_spinner);
+
+        // attaching data adapter to spinner
+        spinner.setAdapter(dataAdapter);
+
+
+        btnGet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mPopupWindow.dismiss();
+
+                preferences.edit().putString(Common.Type_Search, "Year").commit();
+
+
+                radioData.setVisibility(View.VISIBLE);
+                btn_search_add.setVisibility(View.VISIBLE);
+                text_selected.setVisibility(View.VISIBLE);
+                btn_search_final.setVisibility(View.VISIBLE);
+
+
+          //      search_year = item_Selected;
+
+             //   text_selected.setText("Selected Year :   " + search_year);
+
+            }
+        });
+
+
+    }
+*/
+
+
 }
