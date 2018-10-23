@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <!-- check wifi -->
     <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> -->
@@ -27,6 +28,7 @@
 
         <service
             android:name=".service.LocationTracker"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:enabled="true"
             android:exported="true" />
 

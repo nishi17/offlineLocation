@@ -22,6 +22,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView txtTitle;
 
 
-
     public String getSearchResultFragment() {
         return SearchResultFragment;
     }
@@ -100,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             proceedAfterPermission();
 
         }
+
+
 
         init();
 
@@ -312,7 +314,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 dialog.cancel();
 
-                goToSettings(title, per);
+
+                TelephonyManager telMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                int simState = telMgr.getSimState();
+                switch (simState) {
+                    case TelephonyManager.SIM_STATE_ABSENT:
+                        // do something
+                        break;
+                    case TelephonyManager.SIM_STATE_NETWORK_LOCKED:
+                        // do something
+                        break;
+                    case TelephonyManager.SIM_STATE_PIN_REQUIRED:
+                        // do something
+                        break;
+                    case TelephonyManager.SIM_STATE_PUK_REQUIRED:
+                        // do something
+                        break;
+                    case TelephonyManager.SIM_STATE_READY:
+
+                        Intent alarm = new Intent(context, AlarmReceiver.class);
+                        boolean alarmRunning = (PendingIntent.getBroadcast(context, 0, alarm, PendingIntent.FLAG_NO_CREATE) != null);
+                        if (alarmRunning == false) {
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarm, 0);
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), /*10000*/60000, pendingIntent);/* /10 min*/
+                        }
+
+                        // do something
+                        break;
+                    case TelephonyManager.SIM_STATE_UNKNOWN:
+                        // do something
+                        break;
+                }
+
+
+                //goToSettings(title, per);
 
             }
         });
@@ -402,6 +438,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
                         isShowGpsDialog = false;
+
+
+                        Intent alarm = new Intent(context, AlarmReceiver.class);
+                        boolean alarmRunning = (PendingIntent.getBroadcast(context, 0, alarm, PendingIntent.FLAG_NO_CREATE) != null);
+                        if (alarmRunning == false) {
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarm, 0);
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), /*10000*/600000, pendingIntent);/* /10 min*/
+                        }
                     }
                 });
         final AlertDialog alert = builder.create();

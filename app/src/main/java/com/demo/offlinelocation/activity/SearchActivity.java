@@ -359,7 +359,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         mPopupWindow.setFocusable(false);
         mPopupWindow.showAtLocation(linear, Gravity.NO_GRAVITY, 0, 1000);
 
-        LinearLayout linear_year = (LinearLayout)dialogView.findViewById(R.id.linear_year);
+        LinearLayout linear_year = (LinearLayout) dialogView.findViewById(R.id.linear_year);
         linear_year.setVisibility(View.GONE);
 
         // Spinner element
@@ -590,8 +590,11 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
-        mPopupWindow.dismiss();
+        if (mPopupWindow != null) {
+            if (mPopupWindow.isShowing()) {
+                mPopupWindow.dismiss();
+            }
+        }
     }
 
     @Override
@@ -669,7 +672,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         // Drop down layout style - list view with radio button
         dataAdapter.setDropDownViewResource(*/
-/*android.R.layout.simple_spinner_dropdown_item*//*
+    /*android.R.layout.simple_spinner_dropdown_item*//*
 R.layout.dropdown_spinner);
 
         // attaching data adapter to spinner

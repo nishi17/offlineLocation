@@ -53,9 +53,10 @@ public class SearchResultActivity extends AppCompatActivity {
 
     private static Context context;
     private TextView txtTitle;
+    private static TextView tv_no_data;
     private ImageView ev_navIcon;
 
-    private static TableLayout tableLayout;
+    private static TableLayout tableLayout, table_header;
     public String querySTRING;
     private static TextView t_lat, t_long, t_time, t_address;
 
@@ -79,11 +80,15 @@ public class SearchResultActivity extends AppCompatActivity {
 
         txtTitle = (TextView) findViewById(R.id.txt_title);
         txtTitle.setText("Result Activity");
+        tv_no_data = (TextView) findViewById(R.id.tv_no_data);
+        tv_no_data.setVisibility(View.GONE);
 
         ev_navIcon = (ImageView) findViewById(R.id.iv_navicon);
         ev_navIcon.setVisibility(View.GONE);
 
         tableLayout = (TableLayout) findViewById(R.id.table);
+        table_header = (TableLayout) findViewById(R.id.table_header);
+        table_header.setVisibility(View.VISIBLE);
 
 
         try {
@@ -192,7 +197,7 @@ public class SearchResultActivity extends AppCompatActivity {
             }
         }, 500);
 
-
+     //   getAlldataFromDatabase();
     }
 
     private void Get_MONTH_YEAR_data(String get_search_month, String lastWeekDatee) throws ParseException {
@@ -416,7 +421,6 @@ public class SearchResultActivity extends AppCompatActivity {
 
 
             DatabaseHandler databaseHandler = new DatabaseHandler(context);
-
 
             SQLiteDatabase database = databaseHandler.getReadableDatabase();
 
@@ -723,9 +727,13 @@ public class SearchResultActivity extends AppCompatActivity {
                 } while (cursor.moveToNext());
 
             } else {
-
+                tv_no_data.setVisibility(View.VISIBLE);
+                table_header.setVisibility(View.GONE);
             }
 
+        } else {
+            tv_no_data.setVisibility(View.VISIBLE);
+            table_header.setVisibility(View.GONE);
         }
     }
 }
